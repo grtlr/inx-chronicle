@@ -7,7 +7,7 @@
 
 /// Module that contains the database types and constans.
 pub mod db;
-/// Module that contains the (`Error`)[self::error::Error] type.
+/// Module that contains the [`Error`](self::error::Error) type.
 pub mod error;
 
 #[cfg(test)]
