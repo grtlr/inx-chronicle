@@ -158,7 +158,7 @@ impl RuntimeScope {
         }
     }
 
-    /// Create a new scope within this one
+    /// Create a new scope within this one.
     pub async fn scope<S, F, O>(&self, f: S) -> Result<O, RuntimeError>
     where
         O: Send + Sync,
@@ -178,7 +178,7 @@ impl RuntimeScope {
         }
     }
 
-    /// Await the tasks in this runtime's scope
+    /// Await the tasks in this runtime's scope.
     pub(crate) async fn join(&mut self) {
         log::debug!("Joining scope {:x}", self.0.id.as_fields().0);
         for handle in self.join_handles.drain(..) {
@@ -217,7 +217,7 @@ impl RuntimeScope {
         self.depend_on().await?.get().await
     }
 
-    /// Remove data from this scope
+    /// Remove data from this scope.
     pub async fn remove_data<T: 'static + Send + Sync + Clone>(&self) -> Option<T> {
         log::debug!(
             "Removing {} from scope {:x}",
@@ -230,7 +230,7 @@ impl RuntimeScope {
             .map(|res| res.with_type::<T>())
     }
 
-    /// Spawn a new, plain task
+    /// Spawn a new, plain task.
     pub async fn spawn_task<T, F>(&mut self, f: T) -> AbortHandle
     where
         T: Send + FnOnce(&mut RuntimeScope) -> F,
@@ -267,7 +267,7 @@ impl RuntimeScope {
         abort_handle
     }
 
-    /// Spawn a new actor with a supervisor handle
+    /// Spawn a new actor with a supervisor handle.
     pub async fn spawn_actor_supervised<A, Sup>(
         &mut self,
         mut actor: A,
