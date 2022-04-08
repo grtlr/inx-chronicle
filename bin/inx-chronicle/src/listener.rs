@@ -10,7 +10,7 @@ use async_trait::async_trait;
 use chronicle::{
     inx::InxError,
     runtime::{
-        actor::{context::ActorContext, envelope::HandleEvent, handle::Act, report::Report, Actor},
+        actor::{envelope::HandleEvent, Actor, ActorContext, Addr, Report},
         error::RuntimeError,
     },
 };
@@ -114,7 +114,7 @@ impl<I> InxStreamListener<I> {
 
 #[async_trait]
 impl Actor for InxStreamListener<inx::proto::Message> {
-    type Data = (InxClient<Channel>, Act<Broker>);
+    type Data = (InxClient<Channel>, Addr<Broker>);
     type Error = INXListenerError;
 
     async fn init(&mut self, cx: &mut ActorContext<Self>) -> Result<Self::Data, Self::Error>
@@ -143,7 +143,7 @@ impl Actor for InxStreamListener<inx::proto::Message> {
 
 #[async_trait]
 impl Actor for InxStreamListener<inx::proto::Milestone> {
-    type Data = (InxClient<Channel>, Act<Broker>);
+    type Data = (InxClient<Channel>, Addr<Broker>);
     type Error = INXListenerError;
 
     async fn init(&mut self, cx: &mut ActorContext<Self>) -> Result<Self::Data, Self::Error>

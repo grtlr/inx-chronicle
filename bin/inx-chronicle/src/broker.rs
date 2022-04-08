@@ -5,7 +5,7 @@ use async_trait::async_trait;
 use chronicle::{
     db::{MongoDatabase, MongoDbError},
     runtime::{
-        actor::{context::ActorContext, envelope::HandleEvent, Actor},
+        actor::{envelope::HandleEvent, Actor, ActorContext},
         error::RuntimeError,
     },
 };

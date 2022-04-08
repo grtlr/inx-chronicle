@@ -15,7 +15,7 @@ use broker::Broker;
 use chronicle::{
     db::MongoConfig,
     runtime::{
-        actor::{context::ActorContext, envelope::HandleEvent, report::Report, Actor},
+        actor::{envelope::HandleEvent, Actor, ActorContext, Report},
         error::RuntimeError,
         scope::RuntimeScope,
         Runtime,

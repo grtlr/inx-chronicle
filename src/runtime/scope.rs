@@ -11,13 +11,13 @@ use tokio::task::JoinHandle;
 use tokio_stream::wrappers::UnboundedReceiverStream;
 
 use super::{
-    actor::{context::ActorContext, envelope::HandleEvent, handle::Act, report::Report, Actor},
+    actor::{envelope::HandleEvent, Actor, ActorContext, Addr, Report},
     error::RuntimeError,
     registry::{DepStatus, Scope, ScopeId, ROOT_SCOPE},
     shutdown::ShutdownHandle,
 };
 use crate::runtime::{
-    actor::{envelope::Envelope, error::ActorError, report::ErrorReport},
+    actor::{envelope::Envelope, ActorError, ErrorReport},
     shutdown::ShutdownStream,
 };
 
@@ -105,11 +105,11 @@ impl ScopeView {
 
     /// Get an actor's event handle, if it exists in this scope.
     /// Note: This will only return a handle if the actor exists outside of a pool.
-    pub async fn actor<A>(&self) -> Option<Act<A>>
+    pub async fn actor<A>(&self) -> Option<Addr<A>>
     where
         A: 'static + Actor,
     {
-        self.get_data_opt::<Act<A>>()
+        self.get_data_opt::<Addr<A>>()
             .await
             .and_then(|handle| (!handle.is_closed()).then(|| handle))
     }
@@ -271,8 +271,8 @@ impl RuntimeScope {
     pub async fn spawn_actor_supervised<A, Sup>(
         &mut self,
         mut actor: A,
-        supervisor_handle: Act<Sup>,
-    ) -> Result<Act<A>, RuntimeError>
+        supervisor_handle: Addr<Sup>,
+    ) -> Result<Addr<A>, RuntimeError>
     where
         A: 'static + Actor + Debug + Send + Sync,
         Sup: 'static + HandleEvent<Report<A>>,
@@ -294,7 +294,7 @@ impl RuntimeScope {
         let (sender, receiver) = tokio::sync::mpsc::unbounded_channel::<Envelope<A>>();
         let (receiver, shutdown_handle) = ShutdownStream::new(UnboundedReceiverStream::new(receiver));
         let scope = self.child(Some(shutdown_handle), Some(abort_handle)).await;
-        let handle = Act::new(scope.scope.clone(), sender);
+        let handle = Addr::new(scope.scope.clone(), sender);
         let mut cx = ActorContext::new(scope, handle.clone(), receiver);
         log::debug!("Initializing {}", actor.name());
         self.add_data(handle.clone()).await;
@@ -346,7 +346,7 @@ impl RuntimeScope {
     }
 
     /// Spawn a new actor with no supervisor
-    pub async fn spawn_actor<A>(&mut self, mut actor: A) -> Result<Act<A>, RuntimeError>
+    pub async fn spawn_actor<A>(&mut self, mut actor: A) -> Result<Addr<A>, RuntimeError>
     where
         A: 'static + Actor + Send + Sync,
     {
@@ -367,7 +367,7 @@ impl RuntimeScope {
         let (sender, receiver) = tokio::sync::mpsc::unbounded_channel::<Envelope<A>>();
         let (receiver, shutdown_handle) = ShutdownStream::new(UnboundedReceiverStream::new(receiver));
         let scope = self.child(Some(shutdown_handle), Some(abort_handle)).await;
-        let handle = Act::new(scope.scope.clone(), sender);
+        let handle = Addr::new(scope.scope.clone(), sender);
         let mut cx = ActorContext::new(scope, handle.clone(), receiver);
         log::debug!("Initializing {}", actor.name());
         self.add_data(handle.clone()).await;

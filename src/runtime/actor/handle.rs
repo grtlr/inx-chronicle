@@ -27,14 +27,14 @@ impl<S: Into<String>> From<S> for SendError {
     }
 }
 
-/// An actor handle, used to send events
+/// A handle that is used to communicate with an [`Actor`].
 #[derive(Debug)]
-pub struct Act<A: Actor> {
+pub struct Addr<A: Actor> {
     pub(crate) scope: ScopeView,
     pub(crate) sender: UnboundedSender<Envelope<A>>,
 }
 
-impl<A: Actor> Act<A> {
+impl<A: Actor> Addr<A> {
     pub(crate) fn new(scope: ScopeView, sender: UnboundedSender<Envelope<A>>) -> Self {
         Self { scope, sender }
     }
@@ -49,7 +49,7 @@ impl<A: Actor> Act<A> {
         self.scope.abort().await;
     }
 
-    /// Get the scope id of the actor this handle represents
+    /// Get the scope id of the actor this handle represents.
     pub fn scope_id(&self) -> ScopeId {
         self.scope.id()
     }
@@ -68,7 +68,7 @@ impl<A: Actor> Act<A> {
     }
 }
 
-impl<A: 'static + Actor> Clone for Act<A> {
+impl<A: 'static + Actor> Clone for Addr<A> {
     fn clone(&self) -> Self {
         Self {
             scope: self.scope.clone(),

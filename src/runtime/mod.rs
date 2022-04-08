@@ -32,7 +32,7 @@ where
     }
 }
 
-/// Starting point for the runtime
+/// Starting point for the runtime.
 pub struct Runtime;
 
 impl Runtime {

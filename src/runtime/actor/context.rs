@@ -10,22 +10,23 @@ use tokio_stream::wrappers::UnboundedReceiverStream;
 
 use super::{
     envelope::{Envelope, HandleEvent},
-    handle::Act,
-    report::Report,
+    error::Report,
+    handle::Addr,
     Actor,
 };
 use crate::runtime::{error::RuntimeError, scope::RuntimeScope, shutdown::ShutdownStream};
 
+/// The context of an [`Actor`], consiting of the [`RuntimeScope`] and the [`Actor`]'s communication channels.
 pub struct ActorContext<A: Actor> {
     pub(crate) scope: RuntimeScope,
-    pub(crate) handle: Act<A>,
+    pub(crate) handle: Addr<A>,
     pub(crate) receiver: ShutdownStream<UnboundedReceiverStream<Envelope<A>>>,
 }
 
 impl<A: Actor> ActorContext<A> {
     pub(crate) fn new(
         scope: RuntimeScope,
-        handle: Act<A>,
+        handle: Addr<A>,
         receiver: ShutdownStream<UnboundedReceiverStream<Envelope<A>>>,
     ) -> Self {
         Self {
@@ -35,8 +36,8 @@ impl<A: Actor> ActorContext<A> {
         }
     }
 
-    /// Spawn a new supervised child actor
-    pub async fn spawn_actor_supervised<OtherA>(&mut self, actor: OtherA) -> Result<Act<OtherA>, RuntimeError>
+    /// Spawns a new supervised child actor.
+    pub async fn spawn_actor_supervised<OtherA>(&mut self, actor: OtherA) -> Result<Addr<OtherA>, RuntimeError>
     where
         OtherA: 'static + Actor + Debug + Send + Sync,
         A: 'static + Send + HandleEvent<Report<OtherA>>,
@@ -46,11 +47,11 @@ impl<A: Actor> ActorContext<A> {
     }
 
     /// Get this actors's handle
-    pub fn handle(&self) -> &Act<A> {
+    pub fn handle(&self) -> &Addr<A> {
         &self.handle
     }
 
-    /// Get the inbox
+    /// Gets the inbox
     pub fn inbox(&mut self) -> &mut ShutdownStream<UnboundedReceiverStream<Envelope<A>>> {
         &mut self.receiver
     }
