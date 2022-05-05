@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use super::{FeatureBlock, NativeToken, OutputAmount, UnlockCondition};
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct NftId(#[serde(with = "serde_bytes")] pub Box<[u8]>);
 
@@ -24,7 +24,7 @@ impl TryFrom<NftId> for stardust::NftId {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NftOutput {
     amount: OutputAmount,
     native_tokens: Box<[NativeToken]>,

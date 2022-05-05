@@ -6,9 +6,15 @@ use serde::{Deserialize, Serialize};
 
 use super::payload::Payload;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Ord, PartialOrd, Eq)]
 #[serde(transparent)]
 pub struct MessageId(#[serde(with = "serde_bytes")] pub Box<[u8]>);
+
+impl MessageId {
+    pub fn to_hex(&self) -> String {
+        hex::encode(self.0.as_ref())
+    }
+}
 
 impl From<stardust::MessageId> for MessageId {
     fn from(value: stardust::MessageId) -> Self {
@@ -24,7 +30,7 @@ impl TryFrom<MessageId> for stardust::MessageId {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Message {
     pub id: MessageId,
     pub protocol_version: u8,

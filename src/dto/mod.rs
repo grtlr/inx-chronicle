@@ -12,7 +12,7 @@ mod payload;
 mod signature;
 mod unlock_block;
 
-pub use self::{input::*, message::*, output::*, payload::*, signature::*, unlock_block::*};
+pub use self::{address::*, input::*, message::*, output::*, payload::*, signature::*, unlock_block::*};
 
 pub mod display_fromstr {
     use std::{fmt::Display, marker::PhantomData, str::FromStr};

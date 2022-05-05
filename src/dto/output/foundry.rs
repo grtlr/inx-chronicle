@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use super::{FeatureBlock, NativeToken, OutputAmount, TokenScheme, TokenTag, UnlockCondition};
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct FoundryOutput {
     #[serde(with = "crate::dto::display_fromstr")]
     amount: OutputAmount,

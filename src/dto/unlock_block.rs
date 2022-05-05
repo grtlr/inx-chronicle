@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::dto;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum UnlockBlock {
     #[serde(rename = "signature")]

@@ -8,7 +8,7 @@ pub use super::{
     feature_block::FeatureBlock, native_token::NativeToken, unlock_condition::UnlockCondition, OutputAmount,
 };
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct AliasId(#[serde(with = "serde_bytes")] pub Box<[u8]>);
 
@@ -26,7 +26,7 @@ impl TryFrom<AliasId> for stardust::AliasId {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AliasOutput {
     #[serde(with = "crate::dto::display_fromstr")]
     pub amount: OutputAmount,

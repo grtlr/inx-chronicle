@@ -16,7 +16,7 @@ pub use self::{
     treasury_transaction::TreasuryTransactionPayload,
 };
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum Payload {
     #[serde(rename = "transaction")]

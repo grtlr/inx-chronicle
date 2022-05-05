@@ -4,7 +4,7 @@
 use bee_message_stardust::signature as stardust;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum Signature {
     #[serde(rename = "ed25519")]

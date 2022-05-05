@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use super::{AliasId, NftId};
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub enum Address {
     Ed25519(Box<[u8]>),
     Alias(AliasId),

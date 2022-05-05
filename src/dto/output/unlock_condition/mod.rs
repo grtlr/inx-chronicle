@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use super::AliasId;
 use crate::dto::address::Address;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum UnlockCondition {
     #[serde(rename = "address")]

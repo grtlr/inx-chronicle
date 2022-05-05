@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::dto::{self, address::Address};
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct MilestoneId(#[serde(with = "serde_bytes")] pub Box<[u8]>);
 
@@ -26,7 +26,7 @@ impl TryFrom<MilestoneId> for stardust::MilestoneId {
 
 pub type MilestoneIndex = u32;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct MilestonePayload {
     pub essence: MilestoneEssence,
     pub signatures: Box<[dto::Signature]>,
@@ -55,7 +55,7 @@ impl TryFrom<MilestonePayload> for stardust::MilestonePayload {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct MilestoneEssence {
     pub index: MilestoneIndex,
     pub timestamp: u32,
@@ -112,7 +112,7 @@ impl TryFrom<MilestoneEssence> for stardust::MilestoneEssence {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum MilestoneOption {
     #[serde(rename = "receipt")]
@@ -176,7 +176,7 @@ impl TryFrom<MilestoneOption> for stardust::MilestoneOption {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct MigratedFundsEntry {
     #[serde(with = "serde_bytes")]
     tail_transaction_hash: Box<[u8]>,

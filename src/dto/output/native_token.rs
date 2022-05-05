@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 
 pub type TokenTag = Box<[u8]>;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct TokenAmount(#[serde(with = "serde_bytes")] pub Box<[u8]>);
 
@@ -27,7 +27,7 @@ impl From<TokenAmount> for U256 {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct TokenId(#[serde(with = "serde_bytes")] pub Box<[u8]>);
 
@@ -45,7 +45,7 @@ impl TryFrom<TokenId> for stardust::TokenId {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum TokenScheme {
     #[serde(rename = "simple")]
@@ -86,7 +86,7 @@ impl TryFrom<TokenScheme> for stardust::TokenScheme {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NativeToken {
     pub token_id: TokenId,
     pub amount: TokenAmount,

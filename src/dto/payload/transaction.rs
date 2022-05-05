@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::dto;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct TransactionId(#[serde(with = "serde_bytes")] pub Box<[u8]>);
 
@@ -24,7 +24,7 @@ impl TryFrom<TransactionId> for stardust::TransactionId {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TransactionPayload {
     pub id: TransactionId,
     pub essence: TransactionEssence,
@@ -57,7 +57,7 @@ impl TryFrom<TransactionPayload> for stardust::TransactionPayload {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum TransactionEssence {
     #[serde(rename = "regular")]

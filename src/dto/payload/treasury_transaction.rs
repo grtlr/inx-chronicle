@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use super::MilestoneId;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TreasuryTransactionPayload {
     input_milestone_id: MilestoneId,
     #[serde(with = "crate::dto::display_fromstr")]

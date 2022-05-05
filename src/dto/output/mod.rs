@@ -30,7 +30,7 @@ use crate::dto;
 pub type OutputAmount = u64;
 pub type OutputIndex = u16;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct OutputId {
     pub transaction_id: dto::TransactionId,
     pub index: OutputIndex,
@@ -53,7 +53,7 @@ impl TryFrom<OutputId> for stardust::OutputId {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum Output {
     #[serde(rename = "treasury")]
