@@ -26,7 +26,7 @@ pub enum UnlockCondition {
         milestone_index: u32,
         timestamp: u32,
     },
-    #[serde(rename = "stae_controller_address")]
+    #[serde(rename = "state_controller_address")]
     StateControllerAddress(Address),
     #[serde(rename = "governor_address")]
     GovernorAddress(Address),
