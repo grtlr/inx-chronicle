@@ -368,9 +368,15 @@ impl From<inx::MessageMetadata> for MessageMetadata {
                     Some(ConflictReason::InputUtxoAlreadySpentInThisMilestone)
                 }
                 inx::ConflictReason::InputNotFound => Some(ConflictReason::InputUtxoNotFound),
-                inx::ConflictReason::InputOutputSumMismatch => todo!(),
+                inx::ConflictReason::InputOutputSumMismatch => Some(ConflictReason::CreatedConsumedAmountMismatch),
                 inx::ConflictReason::InvalidSignature => Some(ConflictReason::InvalidSignature),
-                inx::ConflictReason::InvalidNetworkId => todo!(),
+                inx::ConflictReason::TimelockNotExpired => Some(ConflictReason::TimelockNotExpired),
+                inx::ConflictReason::InvalidNativeTokens => Some(ConflictReason::InvalidNativeTokens),
+                inx::ConflictReason::ReturnAmountNotFulfilled => Some(ConflictReason::StorageDepositReturnUnfulfilled),
+                inx::ConflictReason::InvalidInputUnlock => Some(ConflictReason::InvalidUnlockBlock),
+                inx::ConflictReason::InvalidInputsCommitment => Some(ConflictReason::InputsCommitmentsMismatch),
+                inx::ConflictReason::InvalidSender => Some(ConflictReason::UnverifiedSender),
+                inx::ConflictReason::InvalidChainStateTransition => Some(ConflictReason::InvalidChainStateTransition),
                 inx::ConflictReason::SemanticValidationFailed => Some(ConflictReason::SemanticValidationFailed),
             },
         }
