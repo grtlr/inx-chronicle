@@ -98,12 +98,14 @@ impl HandleEvent<Report<Solidifier>> for Collector {
 
 #[cfg(feature = "stardust")]
 pub mod stardust {
+    use std::collections::HashSet;
+
     use chronicle::{
         db::model::stardust::{
             message::{MessageMetadata, MessageRecord},
             milestone::MilestoneRecord,
         },
-        stardust::MessageId,
+        dto,
     };
 
     use super::*;
@@ -111,7 +113,8 @@ pub mod stardust {
     #[derive(Debug)]
     pub struct MilestoneState {
         pub milestone_index: u32,
-        pub process_queue: VecDeque<MessageId>,
+        pub process_queue: VecDeque<dto::MessageId>,
+        pub db_cache: HashSet<dto::MessageId>,
     }
 
     impl MilestoneState {
@@ -119,6 +122,7 @@ pub mod stardust {
             Self {
                 milestone_index,
                 process_queue: VecDeque::new(),
+                db_cache: HashSet::new(),
             }
         }
     }
@@ -181,7 +185,7 @@ pub mod stardust {
                 Ok(rec) => {
                     let message_id = rec.message_id;
                     self.db
-                        .update_message_metadata(&message_id, &MessageMetadata::from(rec))
+                        .update_message_metadata(&message_id.into(), &MessageMetadata::from(rec))
                         .await?;
                 }
                 Err(e) => {
@@ -206,7 +210,9 @@ pub mod stardust {
                     self.db.upsert_milestone_record(&rec).await?;
                     // Get or create the milestone state
                     let mut state = MilestoneState::new(rec.milestone_index);
-                    state.process_queue.extend(rec.payload.essence().parents().iter());
+                    state
+                        .process_queue
+                        .extend(Vec::from(rec.payload.essence.parents).into_iter());
                     solidifiers
                         // Divide solidifiers fairly by milestone
                         .get(&(rec.milestone_index as usize % self.solidifier_count))
@@ -255,7 +261,7 @@ pub mod stardust {
                         Ok(rec) => {
                             let message_id = rec.message_id;
                             self.db
-                                .update_message_metadata(&message_id, &MessageMetadata::from(rec))
+                                .update_message_metadata(&message_id.into(), &MessageMetadata::from(rec))
                                 .await?;
                             // Send this directly to the solidifier that requested it
                             solidifier.send(ms_state)?;
