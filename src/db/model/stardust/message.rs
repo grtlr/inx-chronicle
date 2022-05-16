@@ -223,7 +223,7 @@ impl MongoDb {
             doc! { "$unwind": { "path": "$message.payload.essence.outputs", "includeArrayIndex": "message.payload.essence.outputs.idx" } },
             // Lookup spending inputs for each output, if they exist
             doc! { "$lookup": {
-                "from": "stardust_messages",
+                "from": "stardust_messages", // TODO That shouldn't be hardcoded.
                 // Keep track of the output id
                 "let": { "transaction_id": "$message.payload.transaction_id", "index": "$message.payload.essence.outputs.idx" },
                 "pipeline": [
@@ -268,13 +268,21 @@ impl MongoDb {
 }
 
 #[cfg(feature = "api-analytics")]
+#[derive(Serialize, Deserialize)]
+pub struct AggregateAddresses {
+    pub total_addresses: i64,
+    pub recv_addresses: i64,
+    pub send_addresses: i64,
+}
+
+#[cfg(feature = "api-analytics")]
 impl MongoDb {
     /// Create aggregate statistics of all addresses.
     pub async fn aggregate_addresses(
         &self,
         start_milestone: u32,
         end_milestone: u32,
-    ) -> Result<Option<Document>, Error> {
+    ) -> Result<Option<AggregateAddresses>, Error> {
         self.0.collection::<MessageRecord>(MessageRecord::COLLECTION)
         .aggregate(
             vec![
@@ -329,13 +337,13 @@ impl MongoDb {
                     ],
                 } },
                 doc! { "$project": {
-                    "total_addresses": { "$arrayElemAt": ["$total.addresses", 0] },
-                    "recv_addresses": { "$arrayElemAt": ["$recv.addresses", 0] },
-                    "send_addresses": { "$arrayElemAt": ["$send.addresses", 0] },
+                    "total_addresses": { "$arrayElemAt": ["$total.addresses", 0i64] },
+                    "recv_addresses": { "$arrayElemAt": ["$recv.addresses", 0i64] },
+                    "send_addresses": { "$arrayElemAt": ["$send.addresses", 0i64] },
                 } },
             ],
             None,
         )
-        .await?.try_next().await
+        .await?.try_next().await.map(|maybe_doc| maybe_doc.map(|doc| bson::from_document(doc).expect("projection failed")))
     }
 }

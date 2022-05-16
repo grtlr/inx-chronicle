@@ -5,9 +5,13 @@ use axum::{extract::Path, routing::get, Extension, Router};
 use bee_message_stardust::address as bee;
 use chronicle::{
     db::{bson::DocExt, MongoDb},
-    types::{ledger::LedgerInclusionState, stardust::message::Address},
+    types::{
+        ledger::LedgerInclusionState,
+        stardust::message::{Address, TransactionPayload},
+    },
 };
 use futures::TryStreamExt;
+use mongodb::bson;
 
 use super::responses::TransactionHistoryResponse;
 use crate::api::{
@@ -51,11 +55,13 @@ async fn transaction_history(
     let transactions = records
         .into_iter()
         .map(|mut rec| {
-            let mut payload = rec.take_document("message.payload")?;
+            let mut payload_bson = rec.get("message.payload").unwrap();
+            let transaction_payload: TransactionPayload = bson::from_bson(*payload_bson)?;
+
             let spending_transaction = rec.take_document("spending_transaction").ok();
-            let output = payload.take_document("essence.outputs")?;
+            let output = transaction_payload.essence.regular().outputs;
             Ok(Transfer {
-                transaction_id: payload.get_as_string("transaction_id")?,
+                transaction_id: transaction_payload.id.to_hex(),
                 output_index: output.get_as_u16("idx")?,
                 is_spending: spending_transaction.is_some(),
                 inclusion_state: rec

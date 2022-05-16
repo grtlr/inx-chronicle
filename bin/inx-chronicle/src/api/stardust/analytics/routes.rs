@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use axum::{routing::get, Extension, Router};
-use chronicle::db::{bson::DocExt, MongoDb};
+use chronicle::db::MongoDb;
 
-use super::responses::AddressAnalyticsResponse;
+use super::responses::AddressAnalyticsDto;
 use crate::api::{extractors::TimeRange, ApiError, ApiResult};
 
 pub fn routes() -> Router {
@@ -17,7 +17,7 @@ async fn address_analytics(
         start_timestamp,
         end_timestamp,
     }: TimeRange,
-) -> ApiResult<AddressAnalyticsResponse> {
+) -> ApiResult<AddressAnalyticsDto> {
     let start_milestone = database
         .find_first_milestone(start_timestamp)
         .await?
@@ -32,9 +32,9 @@ async fn address_analytics(
         .await?
         .ok_or(ApiError::NoResults)?;
 
-    Ok(AddressAnalyticsResponse {
-        total_addresses: res.get_as_u64("total_addresses")?,
-        recv_addresses: res.get_as_u64("recv_addresses")?,
-        send_addresses: res.get_as_u64("send_addresses")?,
+    Ok(AddressAnalyticsDto {
+        total_addresses: res.total_addresses as u64,
+        recv_addresses: res.recv_addresses as u64,
+        send_addresses: res.send_addresses as u64,
     })
 }

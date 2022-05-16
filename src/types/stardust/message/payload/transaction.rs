@@ -64,30 +64,42 @@ impl TryFrom<TransactionPayload> for stardust::TransactionPayload {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct RegularTransactionEssence {
+    #[serde(with = "crate::types::stringify")]
+    pub network_id: u64,
+    pub inputs: Box<[Input]>,
+    #[serde(with = "serde_bytes")]
+    pub inputs_commitment: Box<[u8]>,
+    pub outputs: Box<[Output]>,
+    pub payload: Option<Payload>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
+#[non_exhaustive]
 pub enum TransactionEssence {
     #[serde(rename = "regular")]
-    Regular {
-        #[serde(with = "crate::types::stringify")]
-        network_id: u64,
-        inputs: Box<[Input]>,
-        #[serde(with = "serde_bytes")]
-        inputs_commitment: Box<[u8]>,
-        outputs: Box<[Output]>,
-        payload: Option<Payload>,
-    },
+    Regular(RegularTransactionEssence),
+}
+
+impl TransactionEssence {
+    pub fn regular(&self) -> &RegularTransactionEssence {
+        match self {
+            Self::Regular(r) => r,
+        }
+    }
 }
 
 impl From<&stardust::TransactionEssence> for TransactionEssence {
     fn from(value: &stardust::TransactionEssence) -> Self {
         match value {
-            stardust::TransactionEssence::Regular(essence) => Self::Regular {
+            stardust::TransactionEssence::Regular(essence) => Self::Regular(RegularTransactionEssence {
                 network_id: essence.network_id(),
                 inputs: essence.inputs().iter().map(Into::into).collect(),
                 inputs_commitment: essence.inputs_commitment().to_vec().into_boxed_slice(),
                 outputs: essence.outputs().iter().map(Into::into).collect(),
                 payload: essence.payload().map(Into::into),
-            },
+            }),
         }
     }
 }
@@ -95,15 +107,15 @@ impl From<&stardust::TransactionEssence> for TransactionEssence {
 impl TryFrom<TransactionEssence> for stardust::TransactionEssence {
     type Error = crate::types::error::Error;
 
-    fn try_from(value: TransactionEssence) -> Result<Self, Self::Error> {
+    fn try_from(value: TransactionEssence) -> Result<Self, Self::Error> { 
         Ok(match value {
-            TransactionEssence::Regular {
+            TransactionEssence::Regular(RegularTransactionEssence {
                 network_id,
                 inputs,
                 inputs_commitment: _,
                 outputs,
                 payload,
-            } => {
+            }) => {
                 let outputs = Vec::from(outputs)
                     .into_iter()
                     .map(TryInto::try_into)

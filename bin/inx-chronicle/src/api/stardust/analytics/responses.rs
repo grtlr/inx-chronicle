@@ -8,7 +8,7 @@ use crate::api::impl_success_response;
 
 /// Response of `GET /api/v2/analytics/addresses[?start_timestamp=<i64>&end_timestamp=<i64>]`.
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct AddressAnalyticsResponse {
+pub struct AddressAnalyticsDto {
     #[serde(rename = "totalAddresses")]
     pub total_addresses: u64,
     #[serde(rename = "receivingAddresses")]
@@ -17,4 +17,4 @@ pub struct AddressAnalyticsResponse {
     pub send_addresses: u64,
 }
 
-impl_success_response!(AddressAnalyticsResponse);
+impl_success_response!(AddressAnalyticsDto);
