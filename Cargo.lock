@@ -128,9 +128,9 @@ dependencies = [
 
 [[package]]
 name = "axum"
-version = "0.5.4"
+version = "0.5.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f4af7447fc1214c1f3a1ace861d0216a6c8bb13965b64bbad9650f375b67689a"
+checksum = "ab2504b827a8bef941ba3dd64bdffe9cf56ca182908a147edd6189c95fbcae7d"
 dependencies = [
  "async-trait",
  "axum-core 0.2.4",
@@ -402,7 +402,7 @@ version = "0.0.1-alpha.1"
 dependencies = [
  "async-recursion",
  "async-trait",
- "axum 0.5.4",
+ "axum 0.5.6",
  "bee-message",
  "bee-metrics",
  "bee-rest-api",
@@ -2519,7 +2519,7 @@ checksum = "5be9d60db39854b30b835107500cf0aca0b0d14d6e1c3de124217c23a29c2ddb"
 dependencies = [
  "async-stream",
  "async-trait",
- "axum 0.5.4",
+ "axum 0.5.6",
  "base64",
  "bytes",
  "futures-core",
