@@ -236,7 +236,7 @@ dependencies = [
 [[package]]
 name = "bee-metrics"
 version = "0.1.0"
-source = "git+https://github.com/iotaledger/bee?branch=mainnet-develop-0.4#af99222d5175d8ba5fb547dda7df1e9fc4a6b7b2"
+source = "git+https://github.com/iotaledger/bee?branch=mainnet-develop-0.4#b92a926c44e530fcae1e75141f9c9d3c27cb3a4c"
 dependencies = [
  "axum 0.4.8",
  "parking_lot",
