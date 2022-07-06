@@ -57,7 +57,7 @@ hyper = { version = "0.14", default-features = false, features = ["server", "tcp
 lazy_static = { version = "1.4", default-features = false, optional = true }
 packable = { version = "0.4", default-features = false, optional = true }
 rand = { version = "0.8", default-features = false, features = ["std"], optional = true }
-regex = { version = "1.5", default-features = false, features = ["std"], optional = true }
+regex = { version = "1.6", default-features = false, features = ["std"], optional = true }
 serde_urlencoded = { version = "0.7", default-features = false, optional = true }
 tower = { version = "0.4", default-features = false, optional = true }
 tower-http = { version = "0.3", default-features = false, features = ["cors", "catch-panic", "trace"], optional = true }
