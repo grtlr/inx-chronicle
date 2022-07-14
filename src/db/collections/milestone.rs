@@ -458,7 +458,7 @@ impl MongoDb {
             };
 
             // Check if there are no gaps in the sync status.
-            if self
+            if !self
                 .get_sync_data(start.milestone_index..=end.milestone_index)
                 .await?
                 .gaps
