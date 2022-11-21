@@ -384,6 +384,8 @@ impl OutputCollection {
 
 #[cfg(feature = "analytics")]
 mod analytics {
+    use mongodb::options::{AggregateOptions, Hint};
+
     use super::*;
     use crate::{
         db::{
@@ -626,7 +628,7 @@ mod analytics {
                         "total_storage_deposit_value": { "$sum": { "$toDouble": { "$ifNull": [ "$output.storage_deposit_return_unlock_condition.amount", 0 ] } } }
                     } },
                 ],
-                None,
+                AggregateOptions::builder().hint(Hint::Name("output_spent_milestone_index_comp".to_string())).build(),
             )
             .await?
             .try_next()
@@ -736,7 +738,7 @@ mod analytics {
                             "address_with_balance_count": "$address_with_balance_count"
                         } },
                     ],
-                    None,
+                    AggregateOptions::builder().hint(Hint::Name("output_spent_milestone_index_comp".to_string())).build()
                 )
                 .await?
                 .try_next()
